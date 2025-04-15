@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>건축자재 퀴즈</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+
+    .quiz-container {
+      width: 50%;
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #333;
+    }
+
+    .question {
+      font-size: 24px;
+      margin: 20px 0;
+    }
+
+    .choices {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .choices li {
+      margin: 10px 0;
+    }
+
+    .choices input {
+      margin-right: 10px;
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .incorrect {
+      color: #f44336;
+    }
+
+    .correct {
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <h1>건축자재 퀴즈</h1>
+    <div id="quiz">
+      <!-- 문제와 선택지가 동적으로 삽입됩니다 -->
+    </div>
+    <button class="btn" onclick="checkAnswers()">결과 확인</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: '콘크리트의 주요 구성 요소가 아닌 것은?',
+        choices: ['시멘트', '모래', '석회석', '철근'],
+        answer: 2
+      },
+      {
+        question: '"목재"가 건축 자재로 사용되는 이유는?',
+        choices: ['내구성이 강하다', '자연스럽고 따뜻한 느낌을 준다', '방음 효과가 있다', '모든 기후에서 사용 가능하다'],
+        answer: 1
+      },
+      {
+        question: '"석고보드"는 주로 어떤 용도로 사용되는가?',
+        choices: ['바닥 마감재', '벽체 마감재', '천장 마감재', '창문 틀'],
+        answer: 1
+      },
+      {
+        question: '알루미늄은 어떤 건축 자재로 많이 사용되는가?',
+        choices: ['벽돌', '창틀', '지붕재', '타일'],
+        answer: 1
+      },
+      {
+        question: '"유리"는 어떤 특성이 뛰어난 건축 자재인가?',
+        choices: ['단열성', '투명성', '내구성', '내화성'],
+        answer: 1
+      },
+      {
+        question: 'PVC(폴리염화비닐)는 주로 어떤 용도로 사용되는가?',
+        choices: ['배수관', '전선', '조경', '기초 구조물'],
+        answer: 0
+      },
+      {
+        question: '강철은 건축에서 어떤 역할을 하는가?',
+        choices: ['기둥과 벽', '바닥 마감재', '내부 장식', '배관'],
+        answer: 0
+      },
+      {
+        question: '"석재"의 특징으로 가장 적합한 것은?',
+        choices: ['내구성이 높고 자연적인 미가 있다', '무게가 가볍고 설치가 용이하다', '흡음성이 뛰어나다', '비용이 저렴하다'],
+        answer: 0
+      },
+      {
+        question: '"방수 시트"는 무엇을 방지하기 위해 사용되는가?',
+        choices: ['물의 침투', '바람의 흐름', '소음', '빛의 차단'],
+        answer: 0
+      },
+      {
+        question: '어떤 건축 자재가 "지붕 타일"로 사용되는가?',
+        choices: ['유리', '알루미늄', '세라믹', '콘크리트'],
+        answer: 2
+      }
+    ];
+
+    let userAnswers = [];
+
+    // 퀴즈 생성 함수
+    function generateQuiz() {
+      const quizContainer = document.getElementById('quiz');
+      quizData.forEach((item, index) => {
+        const questionElement = document.createElement('div');
+        questionElement.classList.add('question');
+        questionElement.innerHTML = `<p>${item.question}</p>`;
+        
+        const choicesList = document.createElement('ul');
+        item.choices.forEach((choice, i) => {
+          const choiceItem = document.createElement('li');
+          choiceItem.innerHTML = `
+            <label>
+              <input type="radio" name="question${index}" value="${i}">
+              ${choice}
+            </label>
+          `;
+          choicesList.appendChild(choiceItem);
+        });
+
+        questionElement.appendChild(choicesList);
+        quizContainer.appendChild(questionElement);
+      });
+    }
+
+    // 선택한 답변 확인 함수
+    function checkAnswers() {
+      let score = 0;
+      let results = '';
+      quizData.forEach((item, index) => {
+        const selectedAnswer = document.querySelector(`input[name="question${index}"]:checked`);
+        if (selectedAnswer) {
+          const answerIndex = parseInt(selectedAnswer.value);
+          if (answerIndex === item.answer) {
+            score++;
+            results += `<p>문제 ${index + 1}: <span class="correct">정답</span> - ${item.choices[answerIndex]}</p>`;
+          } else {
+            results += `<p>문제 ${index + 1}: <span class="incorrect">틀림</span> - ${item.choices[answerIndex]}</p>`;
+          }
+        } else {
+          results += `<p>문제 ${index + 1}: <span class="incorrect">답을 선택하지 않음</span></p>`;
+        }
+      });
+
+      const resultElement = document.getElementById('result');
+      resultElement.innerHTML = `당신의 점수는 ${score} / 10 입니다.<br><br>상세 결과:<br>${results}`;
+    }
+
+    // 퀴즈 생성
+    generateQuiz();
+  </script>
+
+</body>
+</html>
